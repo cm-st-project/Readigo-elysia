@@ -8,7 +8,10 @@ class BookTile extends StatelessWidget {
   final int pages;
   final String grade;
   final String shopurl;
-  const BookTile({super.key,required this.bookImageurl,required this.title,required this.author,required this.pages,required this.grade,required this.shopurl });
+  final bool review;
+  final int rating;
+  final String ReviewText;
+  const BookTile({super.key,required this.bookImageurl,required this.title,required this.author,required this.pages,required this.grade,required this.shopurl,this.review=false,this.rating=0,this.ReviewText=""});
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +23,11 @@ class BookTile extends StatelessWidget {
           pages: pages,
           grade: grade,
           bookImageurl: bookImageurl,
-          shopurl:shopurl
+          shopurl:shopurl,review: true,rating: rating,ReviewText: ReviewText
         )));
       },
       child: Container(
-        height:220 , width: 350,
+        height:230 , width: 350,
         margin: EdgeInsets.only(top: 20, bottom:19),
         padding: EdgeInsets.all(0.1),
         decoration: BoxDecoration(
@@ -47,6 +50,11 @@ class BookTile extends StatelessWidget {
                   children: [
                     Text(title,style: TextStyle(fontSize: 25,fontFamily: "Voltaire"),),
                     Text(author,style: TextStyle(fontSize: 22,fontFamily: "Voltaire"),),
+                    (review)?
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(rating, (index)=>Icon(Icons.star,size: 30,color: Colors.yellow,)),
+                    ):
                     Text(pages.toString()+" pages",style: TextStyle(fontSize: 21,fontFamily: "Voltaire"),),
                     //Text(grade,style: TextStyle(fontSize: 25,fontFamily: "Voltaire"),),
                   ],

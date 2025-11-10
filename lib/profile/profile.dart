@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:testapp3/books/book_tile.dart';
 
 class profilescreen extends StatefulWidget {
   const profilescreen({super.key});
@@ -10,14 +11,15 @@ class profilescreen extends StatefulWidget {
 }
 
 class _profilescreenState extends State<profilescreen> {
-  Future<void> getbookstolibrary()async{
+  Future<List<dynamic>> getbookstolibrary()async{
     try {
       final useremail=FirebaseAuth.instance.currentUser!.email;//get current users email
       DocumentReference doc=FirebaseFirestore.instance.collection("users").doc(useremail);//get users data in firebase
       final userData =await doc.get();
-      final books=userData["books"];
+      final books=userData["books"]as List<dynamic>;
+      return books;
     } catch (e) {
-      print("Error: $e");
+      throw Exception("Error: $e");
     }
   }
   @override
@@ -118,8 +120,31 @@ class _profilescreenState extends State<profilescreen> {
             ),
             Expanded(
                 child: FutureBuilder(
-                    future: future,
-                    builder: builder
+                    future: getbookstolibrary(),
+                    builder: (context, snapshot) {
+                      if(snapshot.connectionState == ConnectionState.waiting){
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError){
+                        return Center(
+                            child: Text('Error: ${snapshot.error}')
+                        );
+                      }
+
+                      final querySnapshot = snapshot.data;
+                      if (querySnapshot == null || querySnapshot.isEmpty) {
+                        return Center(child: Text("No posts found."));
+                      }
+
+                      return ListView.builder(
+                        itemCount: querySnapshot.length,
+                        itemBuilder: (context, index) {
+                          final book=querySnapshot[index];
+                          return BookTile(bookImageurl: book["imageurl"], title: book["title"], author: book["author"], pages:100 , shopurl: "shopurl" , grade: '',review: true,rating: book["rating"],ReviewText: book["review"],);
+                        },
+                      );
+                    }
                 )
             )
           ],

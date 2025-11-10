@@ -14,7 +14,10 @@ class BookPreview extends StatefulWidget {
   final int pages;
   final String grade;
   final String shopurl;
-  const BookPreview({super.key,required this.bookImageurl,required this.title,required this.author,required this.pages,required this.grade,required this.shopurl});
+  final bool review;
+  final int rating;
+  final String ReviewText;
+  const BookPreview({super.key,required this.bookImageurl,required this.title,required this.author,required this.pages,required this.grade,required this.shopurl,this.review=false,this.rating=0,this.ReviewText=""});
 
 
   @override
@@ -46,8 +49,8 @@ class _BookPreviewState extends State<BookPreview> {
       ),
       body: Center(
         child: Column(children: [
-          Text(widget.title,style: TextStyle(fontSize: 50,fontFamily: "Voltaire"),),
-          Text(widget.author,style: TextStyle(fontSize:18,fontFamily:"Voltaire"),),
+          Text(widget.title,textAlign: TextAlign.center,style: TextStyle(fontSize: 35,fontFamily: "Voltaire"),),
+          Text(widget.author,style: TextStyle(fontSize:20,fontFamily:"Voltaire"),),
           Container(
              padding: EdgeInsets.all(10),
             child: Row(
@@ -74,87 +77,121 @@ class _BookPreviewState extends State<BookPreview> {
 
               ],
             ),
-          ),ElevatedButton(
-            onPressed: () async {
-              final Uri Url=Uri.parse(widget.shopurl);
-              if  (!await launchUrl(Url)){
-                print("cannot open url");
-              }
-            },
-            style: OutlinedButton.styleFrom(
-                backgroundColor: Color(0xFFEBFFEE),
-                foregroundColor: Color(0xFF41BF41),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)
-                )
-
-            ),
-            child: Container(
-              width: 120, height: 50,
-              child: Center(child: Text(
-                "📖Read it",
-                style: TextStyle(color: Color(0xFF00C8B3),
-                  fontSize: 20,),
-                textAlign: TextAlign.center,
-              )),
-            ),
           ),
-          SizedBox(height: 20,),
-          ElevatedButton(
-            onPressed: (){
-              bookprovider.setBook(Book(
-                title: widget.title,
-                  authors: [widget.author],
-                pageCount: widget.pages,
-                  thumbnailUrl:widget.bookImageurl,
-                shopurl: widget.shopurl
-              ));
-              Navigator.pop(context);
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>homepage(initialpage: 0)));
-            },
-            style: OutlinedButton.styleFrom(
-                backgroundColor: Color(0xFFEBFFEE),
-                foregroundColor: Color(0xFF41BF41),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)
-                )
+          (widget.review)?ReviewWidget(Review: widget.ReviewText, rating: widget.rating):Column(
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  final Uri Url=Uri.parse(widget.shopurl);
+                  if  (!await launchUrl(Url)){
+                    print("cannot open url");
+                  }
+                },
+                style: OutlinedButton.styleFrom(
+                    backgroundColor: Color(0xFFEBFFEE),
+                    foregroundColor: Color(0xFF41BF41),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)
+                    )
 
-            ),
-            child: Container(
-              width: 120, height: 50,
-              child: Center(child: Text(
-                "📝Quiz Me❓❓❓",
-                style: TextStyle(color: Color(0xFF00C8B3),
-                  fontSize: 20,),
-                textAlign: TextAlign.center,
-              )),
-            ),
-          ),
-          SizedBox(height: 20,),
-          ElevatedButton(
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (_)=>BookReviewPage(title: widget.title, author: widget.author,imageurl: widget.bookImageurl,)));
-            },
-            style: OutlinedButton.styleFrom(
-                backgroundColor: Color(0xFFEBFFEE),
-                foregroundColor: Color(0xFF41BF41),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)
-                )
+                ),
+                child: Container(
+                  width: 120, height: 50,
+                  child: Center(child: Text(
+                    "📖Read it",
+                    style: TextStyle(color: Color(0xFF00C8B3),
+                      fontSize: 20,),
+                    textAlign: TextAlign.center,
+                  )),
+                ),
+              ),
+              SizedBox(height: 20,),
+              ElevatedButton(
+                onPressed: (){
+                  bookprovider.setBook(Book(
+                      title: widget.title,
+                      authors: [widget.author],
+                      pageCount: widget.pages,
+                      thumbnailUrl:widget.bookImageurl,
+                      shopurl: widget.shopurl
+                  ));
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>homepage(initialpage: 0)));
+                },
+                style: OutlinedButton.styleFrom(
+                    backgroundColor: Color(0xFFEBFFEE),
+                    foregroundColor: Color(0xFF41BF41),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)
+                    )
 
-            ),
-            child: Container(
-              width: 150, height: 50,
-              child: Center(child: Text(
-                "Add to Library📚",
-                style: TextStyle(color: Color(0xFF00C8B3),
-                  fontSize: 20,),
-                textAlign: TextAlign.center,
-              )),
-            ),
+                ),
+                child: Container(
+                  width: 174, height: 50,
+                  child: Center(child: Text(
+                    "📝Quiz Me❓❓❓",
+                    style: TextStyle(color: Color(0xFF00C8B3),
+                      fontSize: 20,),
+                    textAlign: TextAlign.center,
+                  )),
+                ),
+              ),
+              SizedBox(height: 20,),
+              ElevatedButton(
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=>BookReviewPage(title: widget.title, author: widget.author,imageurl: widget.bookImageurl,)));
+                },
+                style: OutlinedButton.styleFrom(
+                    backgroundColor: Color(0xFFEBFFEE),
+                    foregroundColor: Color(0xFF41BF41),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)
+                    )
+
+                ),
+                child: Container(
+                  width: 152, height: 50,
+                  child: Center(child: Text(
+                    "Add to Library📚",
+                    style: TextStyle(color: Color(0xFF00C8B3),
+                      fontSize: 20,),
+                    textAlign: TextAlign.center,
+                  )),
+                ),
+              ),
+            ],
           ),
+
         ],),
       ),
     );
   }
 }
+class ReviewWidget extends StatelessWidget {
+  final String Review;
+  final int rating;
+  const ReviewWidget({super.key,required this.Review,required this.rating});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: Color(0x8cf2f2f7)
+      ),
+      width: 350,
+      child: Column(
+        children: [
+          Text("Review",style: TextStyle(fontSize: 40),),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(rating, (index)=>Icon(Icons.star,size: 60,color: Colors.yellow,)),
+          ),
+          Text(Review,style: TextStyle(fontSize: 18),)
+        ],
+      ),
+    );
+  }
+}
+

@@ -77,6 +77,7 @@ class _bookscreenState extends State<bookscreen> {
                   final book = books[index];
                   print(book);
                   return BookTile(
+                    review: false,
                     bookImageurl: book.thumbnailUrl ??
                         "https://via.placeholder.com/150",
                     title: book.title,
