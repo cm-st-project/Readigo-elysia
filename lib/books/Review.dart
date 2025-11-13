@@ -34,7 +34,7 @@ class _BookReviewPageState extends State<BookReviewPage> {
         }])
       });
     } catch (e) {
-      print("Error: $e");
+      throw Exception("Error: $e");
     }
   }
   @override

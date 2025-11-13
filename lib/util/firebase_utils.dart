@@ -21,6 +21,7 @@ class FirebaseUtils {
             "level": 1,
             "friends": [],
             "bio": "Welcome to my profile!",
+            "friendCode": friendCode
           });
         }
       }
@@ -68,8 +69,12 @@ class FirebaseUtils {
   static Future<Map<String, dynamic>> getUserData(String friendCode) async {
     try {
       DocumentReference doc=FirebaseFirestore.instance.collection("users").doc(friendCode);//get users data in firebase
-      final userData = await doc.get() as Map<String, dynamic>;
-      return userData;
+      final snapshot = await doc.get(); // returns DocumentSnapshot
+      if (snapshot.exists) {
+        final userData = snapshot.data() as Map<String, dynamic>;
+        return userData;
+      }
+      throw Exception("No user with that friend code exists.");
     } catch (e) {
       throw Exception("Failed to fetch user data: $e");
     }
@@ -77,9 +82,7 @@ class FirebaseUtils {
 
   static Future<List<dynamic>> getUserBooks(String friendCode)async{
     try {
-      print(friendCode);
       final userData = await getUserData(friendCode);
-      print(userData);
       final books=userData["books"];
       return books;
     } catch (e) {

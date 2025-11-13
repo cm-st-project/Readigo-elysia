@@ -84,7 +84,7 @@ class _BookPreviewState extends State<BookPreview> {
                 onPressed: () async {
                   final Uri Url=Uri.parse(widget.shopurl);
                   if  (!await launchUrl(Url)){
-                    print("cannot open url");
+                    throw Exception("cannot open url");
                   }
                 },
                 style: OutlinedButton.styleFrom(
