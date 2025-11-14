@@ -22,7 +22,8 @@ class FirebaseUtils {
             "level": 1,
             "friends": [],
             "bio": "Welcome to my profile!",
-            "friendCode": friendCode
+            "friendCode": friendCode,
+            "profilePic": "https://imgcdn.stablediffusionweb.com/2024/4/15/437c2a91-01ea-4d6b-b7c4-d489155207f7.jpg",
           });
         }
       }

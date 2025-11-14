@@ -16,6 +16,20 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  bool isOwnProfile = false;
+
+  void checkIfOwnProfile() async {
+    final same = widget.friendCode == await FirebaseUtils.getCurrentUserFriendCode();
+    setState(() {
+      isOwnProfile = same;
+    });
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    checkIfOwnProfile();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               CircleAvatar(
                                 radius: 70,
-                                backgroundImage: NetworkImage('https://imgcdn.stablediffusionweb.com/2024/4/15/437c2a91-01ea-4d6b-b7c4-d489155207f7.jpg'),
+                                backgroundImage: NetworkImage(userData["profilePic"]),
                               ),
                               SizedBox(
                                 height: 5,
@@ -98,16 +112,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ),
                       ),
-                      Expanded(
+                      (isOwnProfile) ? Expanded(
                         flex: 20,
                         child: Center(
                           child: Column(
                             children: [
-                              IconButton(onPressed: (){}, icon: Icon(Icons.mode_edit_outlined))
+                              IconButton(onPressed: (){}, icon: Icon(Icons.settings))
                             ],
                           ),
                         ),
-                      ),
+                      ) : Container(),
 
                     ],
                   );

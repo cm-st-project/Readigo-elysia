@@ -14,15 +14,27 @@ class AddFriendPage extends StatefulWidget {
 class _AddFriendPageState extends State<AddFriendPage> {
   final friendSearchController = TextEditingController();
   List<Map<String, dynamic>> friendList = [];
+  String listMessage = "Search for a friend";
 
   void searchFriend() async {
     final String friendSearch = friendSearchController.text;
+
+    if(friendSearch.isEmpty){
+      setState(() {
+        friendList.clear();
+        listMessage = "Type something in the search bar";
+      });
+      return;
+    }
 
     final user = await FirebaseUtils.getUserData(friendSearch);
     if(user == null){ // if we couldn't find the friend using code
       final users = await FirebaseUtils.searchUserByUsername(friendSearch);
       if(users != null) { //If we found users with that username
         friendList = users;
+      } else { // No users found.
+        friendList.clear();
+        listMessage = "No users found :(";
       }
     } else {
       friendList.clear();
@@ -62,7 +74,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
             Text("Add Friend",style: TextStyle(fontSize: 35,fontFamily: "Voltaire"),),
             SizedBox(height: 5,),
             Container(
-              height: 50, width: 300,
+              height: 50, width: 320,
               decoration: BoxDecoration(
                   color: CupertinoColors.extraLightBackgroundGray,
                   borderRadius: BorderRadius.circular(20)
@@ -89,16 +101,16 @@ class _AddFriendPageState extends State<AddFriendPage> {
             ),
             Expanded(
               child: friendList.isEmpty
-                  ? Center(child: Text("Search for a friend"))
+                  ? Center(child: Text(listMessage))
                   : ListView.builder(
                     itemCount: friendList.length,
                     itemBuilder: (context, index) {
                       final friend = friendList[index];
                       return FriendTile(
-                          profilepic: profilepic,
-                          message: message,
-                          friendcode: friendcode,
-                          username: username)
+                          profilePic: friend["profilePic"],
+                          level: friend["level"],
+                          friendCode: friend["friendCode"],
+                          username: friend["username"]);
                     },
                   )
               ),
