@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp3/books/bookscreen.dart';
 import 'package:testapp3/friends/friends.dart';
+import 'package:testapp3/landing.dart';
 import 'package:testapp3/profile/profile.dart';
 import 'package:testapp3/quiz/generate_quiz.dart';
 import 'package:testapp3/util/firebase_utils.dart';
@@ -54,21 +56,44 @@ class _homepageState extends State<homepage> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 70,
+        centerTitle: true, // ensures title stays centered
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Readigo",
+            Text(
+              "Readigo",
               style: TextStyle(
                 fontSize: 36,
-                  color: Colors.lightBlueAccent,
-                  fontWeight: FontWeight.w500,
-                  shadows: [Shadow(color: Colors.greenAccent,offset: Offset(3, 3),blurRadius: 15)]
+                color: Colors.lightBlueAccent,
+                fontWeight: FontWeight.w500,
+                shadows: [
+                  Shadow(
+                    color: Colors.greenAccent,
+                    offset: Offset(3, 3),
+                    blurRadius: 15,
+                  ),
+                ],
               ),
             ),
-            Image.asset(height: 87,"assets/images/ReadigoLogo.png")
-
+            SizedBox(width: 8),
+            Image.asset(
+              "assets/images/ReadigoLogo.png",
+              height: 87,
+            ),
           ],
         ),
+
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              if(mounted){
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LandingPage()));
+                await FirebaseAuth.instance.signOut();
+              }
+            },
+          ),
+        ],
       ),
       bottomNavigationBar: (pages.isEmpty) ? null :
         BottomNavigationBar(

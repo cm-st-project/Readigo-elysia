@@ -32,29 +32,6 @@ class _FriendsPageState extends State<FriendsPage> {
         ),
             Text("Friends",style: TextStyle(fontSize: 35,fontFamily: "Voltaire"),),
             SizedBox(height: 5,),
-            Container(
-              height: 50, width: 310,
-              decoration: BoxDecoration(
-                  color: CupertinoColors.extraLightBackgroundGray,
-                borderRadius: BorderRadius.circular(20)
-
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding:
-                    EdgeInsets.only(
-                      left: 25
-                    ),
-                    height: 36, width: 254,
-                    child: TextField(
-
-                    ),
-                  ),
-                  IconButton(onPressed:() {}, icon: Icon(Icons.search, size: 33,)  ,)
-                ],
-              ),
-            ),
             Expanded(
               child: FutureBuilder(
                 future: FirebaseUtils.getUserFriends(widget.friendCode),

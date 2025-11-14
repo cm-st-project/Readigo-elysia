@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:testapp3/books/book_tile.dart';
 import 'package:testapp3/design_wrapper.dart';
 import 'package:testapp3/profile/edit_profile.dart';
@@ -104,7 +105,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   SizedBox(width: 27,),
                                   Text(userData["friendCode"],style: TextStyle(fontSize: 18,fontFamily: "Voltaire"),),
-                                  IconButton(onPressed: (){}, icon: Icon(Icons.copy))
+                                  IconButton(onPressed: () {
+                                    Clipboard.setData(ClipboardData(text: widget.friendCode));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text("Copied to clipboard!")),
+                                    );
+                                    }, icon: Icon(Icons.copy))
                                 ],
                               )
                             ],

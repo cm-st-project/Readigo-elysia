@@ -152,6 +152,7 @@ class _BookReviewPageState extends State<BookReviewPage> {
               ElevatedButton(
                 onPressed: (){
                   addbooktolibrary();
+                  Navigator.pop(context);
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => homepage(initialpage: 3)));
                 },
                 style: OutlinedButton.styleFrom(
