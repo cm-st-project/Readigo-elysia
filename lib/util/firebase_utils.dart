@@ -15,6 +15,7 @@ class FirebaseUtils {
         if(!docRef.exists) {
           users.doc(friendCode).set({
             "username": username,
+            "username_lower": username?.toLowerCase(),
             "email": email,
             "dateCreated": FieldValue.serverTimestamp(),
             "books": [],
@@ -66,37 +67,65 @@ class FirebaseUtils {
     return snapshot.docs.first.id;
   }
 
-  static Future<Map<String, dynamic>> getUserData(String friendCode) async {
+  static Future<Map<String, dynamic>?> getUserData(String friendCode) async {
     try {
       DocumentReference doc=FirebaseFirestore.instance.collection("users").doc(friendCode);//get users data in firebase
       final snapshot = await doc.get(); // returns DocumentSnapshot
       if (snapshot.exists) {
         final userData = snapshot.data() as Map<String, dynamic>;
         return userData;
+      } else {
+        return null;
       }
-      throw Exception("No user with that friend code exists.");
     } catch (e) {
-      throw Exception("Failed to fetch user data: $e");
+      return null;
     }
   }
 
-  static Future<List<dynamic>> getUserBooks(String friendCode)async{
+  static Future<List<dynamic>?> getUserBooks(String friendCode)async{
     try {
       final userData = await getUserData(friendCode);
-      final books=userData["books"];
-      return books;
+      if(userData != null){
+        final books=userData["books"];
+        return books;
+      } else {
+        return null;
+      }
     } catch (e) {
       throw Exception("Failed to fetch user's books: $e");
     }
   }
 
-  static Future<List<dynamic>> getUserFriends(String friendCode) async {
+  static Future<List<dynamic>?> getUserFriends(String friendCode) async {
     try {
       final userData = await getUserData(friendCode);
-      final friends=userData["friends"];
-      return friends;
+      if(userData != null){
+        final friends=userData["friends"];
+        return friends;
+      } else {
+        return null;
+      }
     } catch (e) {
       throw Exception("Failed to fetch user's friends: $e");
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> searchUserByUsername(String username) async {
+    try {
+      final lower = username.toLowerCase();
+      final end = '$lower\uf8ff';
+
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('username_lower', isGreaterThanOrEqualTo: lower)
+          .where('username_lower', isLessThanOrEqualTo: end)
+          .get();
+
+      return snapshot.docs
+          .map((doc) => doc.data())
+          .toList();
+    } catch (e) {
+      return null;
     }
   }
 }

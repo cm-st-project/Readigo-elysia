@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:testapp3/homepage.dart';
+import 'package:testapp3/util/firebase_utils.dart';
 class BookReviewPage extends StatefulWidget {
   final String title;
   final String author;
@@ -22,8 +24,8 @@ class _BookReviewPageState extends State<BookReviewPage> {
   }
   Future<void> addbooktolibrary()async{
     try {
-      final useremail=FirebaseAuth.instance.currentUser!.email;//get current users email
-      DocumentReference doc=FirebaseFirestore.instance.collection("users").doc(useremail);//get users data in firebase
+      final userFriendCode = await FirebaseUtils.getCurrentUserFriendCode();
+      DocumentReference doc=FirebaseFirestore.instance.collection("users").doc(userFriendCode);//get users data in firebase
       await doc.update({
         "books":FieldValue.arrayUnion([{//adding book to books list in users data
           "title":widget.title,//
@@ -125,7 +127,8 @@ class _BookReviewPageState extends State<BookReviewPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ElevatedButton(
-                onPressed: () async {
+                onPressed: () {
+                  Navigator.pop(context);
                 },
                 style: OutlinedButton.styleFrom(
                     backgroundColor: Color(0xFFEBFFEE),
@@ -149,6 +152,7 @@ class _BookReviewPageState extends State<BookReviewPage> {
               ElevatedButton(
                 onPressed: (){
                   addbooktolibrary();
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => homepage(initialpage: 3)));
                 },
                 style: OutlinedButton.styleFrom(
                     backgroundColor: Color(0xFFEBFFEE),
