@@ -11,9 +11,25 @@ class OpenaiPrompt{
     ),
   );
 
-  static Future<int> getBookGradeLevel() async{
-    
-    return 1;
+  static Future<int> getBookGradeLevel(String bookTitle) async{
+    String userPrompt = "You are a professional book grader. For the book \"$bookTitle\","
+        "Give me your best estimate for the grade level in a dictionary format like this:"
+        "{\"grade\": int}"
+        "Only give me this dictionary. Do not put a beginning \"spiel\" or any formatting. Give me only the raw data.";
+
+    final request = ChatCompleteText(
+      messages: [
+        Map.of({"role": "user", "content": userPrompt})
+      ],
+      model: Gpt4OChatModel(),
+      maxToken: 1500,
+    );
+    ChatCTResponse? response = await _openAI.onChatCompletion(request: request);
+
+    String rawData = response!.choices.first.message!.content.trim();
+    // Parse string into JSON object
+    final data = jsonDecode(rawData);
+    return data["grade"];
   }
 
   static Future<List<dynamic>> generateQuizQuestions(int numberOfQuestions, String book, int difficulty) async {

@@ -271,7 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         itemCount: querySnapshot.length,
                         itemBuilder: (context, index) {
                           final book=querySnapshot[index];
-                          return BookTile(bookImageurl: book["imageurl"], title: book["title"], author: book["author"], pages:100 , shopurl: "shopurl" , grade: '',review: true,rating: book["rating"],ReviewText: book["review"],);
+                          return BookTile(bookImageurl: book["imageurl"], title: book["title"], author: book["author"], pages:book["pages"] , shopurl: "shopurl" , grade: '',review: true,rating: book["rating"],ReviewText: book["review"],);
                         },
                       );
                     }

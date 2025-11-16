@@ -7,7 +7,8 @@ class BookReviewPage extends StatefulWidget {
   final String title;
   final String author;
   final String imageurl;
-  const BookReviewPage({super.key,required this.title,required this.author,required this.imageurl});
+  final int pages;
+  const BookReviewPage({super.key,required this.title,required this.author,required this.imageurl, required this.pages});
 
   @override
   State<BookReviewPage> createState() => _BookReviewPageState();
@@ -32,7 +33,8 @@ class _BookReviewPageState extends State<BookReviewPage> {
           "author": widget.author,
           "imageurl":widget.imageurl,
           "rating":starrating,
-          "review":reviewtext
+          "review":reviewtext,
+          "pages": widget.pages,
         }])
       });
     } catch (e) {
