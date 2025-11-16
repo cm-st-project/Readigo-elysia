@@ -5,8 +5,7 @@ import 'package:testapp3/util/firebase_utils.dart';
 import '../util/constants.dart';
 
 class QuizResultPage extends StatefulWidget {
-  // questions: [{ "question": "...", "choices": [...], "answer": int }]
-  final List<dynamic> questions;
+  final List<dynamic> questions;       // [{question, choices, answer}]
   final List<int> selectedAnswers;
   final int difficulty;
 
@@ -25,11 +24,12 @@ class _QuizResultPageState extends State<QuizResultPage> {
   late int correctCount;
   late int wrongCount;
 
-  late final int currentXp;
-  late final int nextXp;
-  late final int level;
-  late final int tempLevel;
-  late final int targetXp;
+  int? currentXp;      // initial xp (from firestore)
+  int? nextXp;         // initial next_level_xp
+  int? level;          // initial level
+
+  int? targetXp;       // xp after gaining and leveling
+  int? targetLevel;    // level after leveling
 
   bool _isLoading = true;
 
@@ -44,8 +44,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
     int correct = 0;
 
     for (int i = 0; i < widget.questions.length; i++) {
-      final correctAnswerIndex = widget.questions[i]["answer"];
-      if (widget.selectedAnswers[i] == correctAnswerIndex) {
+      if (widget.selectedAnswers[i] == widget.questions[i]["answer"]) {
         correct++;
       }
     }
@@ -55,35 +54,44 @@ class _QuizResultPageState extends State<QuizResultPage> {
   }
 
   Future<void> _calculateXpGain() async {
-    int gainedXp = correctCount * widget.difficulty;
+    final gainedXp = correctCount * widget.difficulty;
 
-    final currUserFriendCode = await FirebaseUtils.getCurrentUserFriendCode();
-    final userData = await FirebaseUtils.getUserData(currUserFriendCode!);
+    final friendCode = await FirebaseUtils.getCurrentUserFriendCode();
+    final userData = await FirebaseUtils.getUserData(friendCode!);
 
-    currentXp = userData?["xp"];
-    nextXp = userData?["next_level_xp"];
-    level = userData?["level"];
+    final int startXp = userData?["xp"];
+    final int startNextXp = userData?["next_level_xp"];
+    final int startLevel = userData?["level"];
 
-    int tempXp = currentXp + gainedXp;
-    tempLevel = level;
-    int tempNextXp = nextXp;
+    // temp working values
+    int newXp = startXp + gainedXp;
+    int newLevel = startLevel;
+    int newNextXp = startNextXp;
 
-    // Handle level-ups
-    while (tempXp >= tempNextXp) {
-      tempXp -= tempNextXp;
-      tempLevel++;
-      tempNextXp = tempLevel * 100;
+    // apply level ups
+    while (newXp >= newNextXp) {
+      newXp -= newNextXp;
+      newLevel++;
+      newNextXp = newLevel * 100; // your rule
     }
 
-    targetXp = tempXp;
-
-    await FirebaseUtils.updateUser(currUserFriendCode, {
-      "xp": tempXp,
-      "level": tempLevel,
-      "next_level_xp": tempNextXp,
+    // Save new values to Firestore
+    await FirebaseUtils.updateUser(friendCode, {
+      "xp": newXp,
+      "level": newLevel,
+      "next_level_xp": newNextXp,
     });
 
     setState(() {
+      // Initial state (before animation)
+      currentXp = startXp;
+      nextXp = startNextXp;
+      level = startLevel;
+
+      // Final state (where to animate to)
+      targetXp = newXp;
+      targetLevel = newLevel;
+
       _isLoading = false;
     });
   }
@@ -108,6 +116,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
               ),
             ),
             const SizedBox(height: 8),
+
             Text(
               "$correctCount / ${widget.questions.length}",
               style: const TextStyle(
@@ -115,29 +124,33 @@ class _QuizResultPageState extends State<QuizResultPage> {
                 color: Colors.green,
               ),
             ),
+
             Text(
               "Correct: $correctCount    Wrong: $wrongCount",
               style: const TextStyle(fontSize: 18),
             ),
+
             const SizedBox(height: 20),
             const Divider(),
             const SizedBox(height: 10),
+
             Expanded(
               child: ListView.builder(
                 itemCount: widget.questions.length,
                 itemBuilder: (context, index) {
-                  final question = widget.questions[index];
-                  final correctAnswerIndex = question["answer"];
-                  final selected = widget.selectedAnswers[index];
+                  final q = widget.questions[index];
+                  final int correctIdx = q["answer"];
+                  final int selectedIdx = widget.selectedAnswers[index];
 
-                  // Check if the student got it right
-                  final isCorrect = selected == correctAnswerIndex;
+                  final bool isCorrect = selectedIdx == correctIdx;
 
                   return Container(
                     margin: const EdgeInsets.only(bottom: 16),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isCorrect ? Colors.green.shade100 : Colors.red.shade100,
+                      color: isCorrect
+                          ? Colors.green.shade100
+                          : Colors.red.shade100,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: isCorrect ? Colors.green : Colors.red,
@@ -148,7 +161,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Q${index + 1}. ${question["question"]}",
+                          "Q${index + 1}. ${q["question"]}",
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -158,16 +171,18 @@ class _QuizResultPageState extends State<QuizResultPage> {
                         const SizedBox(height: 8),
 
                         Text(
-                          "Your answer: ${question["choices"][selected]}",
+                          "Your answer: ${q["choices"][selectedIdx]}",
                           style: TextStyle(
                             fontSize: 18,
-                            color: isCorrect ? Colors.green.shade800 : Colors.red.shade800,
+                            color: isCorrect
+                                ? Colors.green.shade800
+                                : Colors.red.shade800,
                           ),
                         ),
 
                         if (!isCorrect)
                           Text(
-                            "Correct answer: ${question["choices"][correctAnswerIndex]}",
+                            "Correct answer: ${q["choices"][correctIdx]}",
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -181,13 +196,20 @@ class _QuizResultPageState extends State<QuizResultPage> {
               ),
             ),
 
-            (_isLoading) ? Container() : XPBar(level: level, xp: currentXp, nextLevelXp: nextXp, targetXp: targetXp, targetLevel: tempLevel,),
+            if (!_isLoading)
+              XPBar(
+                level: level!,
+                xp: currentXp!,
+                nextLevelXp: nextXp!,
+                targetXp: targetXp!,
+                targetLevel: targetLevel!,
+              ),
+
+            const SizedBox(height: 10),
 
             ElevatedButton(
               style: Constants.normalButton,
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               child: const Text("Back to Home"),
             ),
           ],

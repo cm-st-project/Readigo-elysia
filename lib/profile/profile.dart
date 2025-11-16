@@ -213,6 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             Expanded(
+              flex: 10,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: FutureBuilder(
@@ -230,7 +231,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
+            Text("Saved Books",style: TextStyle(fontSize: 20,fontFamily: "Voltaire"),),
             Expanded(
+              flex: 30,
                 child: FutureBuilder(
                     future: FirebaseUtils.getUserBooks(widget.friendCode),
                     builder: (context, snapshot) {
