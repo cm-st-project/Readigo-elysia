@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:testapp3/books/book_tile.dart';
+import 'package:testapp3/components/xp_bar.dart';
 import 'package:testapp3/design_wrapper.dart';
 import 'package:testapp3/profile/edit_profile.dart';
 
@@ -53,6 +54,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       checkIfFriends();
     });
+  }
+
+  void getCurrentXpAndLevel() async {
+
   }
 
   @override
@@ -208,6 +213,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: FutureBuilder(
+                    future: FirebaseUtils.getUserData(widget.friendCode),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(child: Text("No results"));
+                      }
+                      final userData = snapshot.data!;
+                      return XPBar(level: userData["level"], xp: userData["xp"], nextLevelXp: userData["next_level_xp"]);
+                    }
+                ),
+              ),
+            ),
+            Expanded(
                 child: FutureBuilder(
                     future: FirebaseUtils.getUserBooks(widget.friendCode),
                     builder: (context, snapshot) {
@@ -225,7 +248,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       if (querySnapshot == null || querySnapshot.isEmpty) {
                         return Center(child: Column(
                           children: [
-                            Text("No books read so far."),
+                            Text("No books saved so far."),
                             TextButton(
                                 onPressed: (){
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>homepage(initialpage: 2)));

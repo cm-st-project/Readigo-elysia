@@ -1,23 +1,22 @@
-import 'dart:convert';
-
-import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:testapp3/quiz/page_indicator.dart';
+import 'package:testapp3/quiz/quiz_result.dart';
 import 'package:testapp3/quiz/quizquestion.dart';
 import 'package:testapp3/util/openai_prompt.dart';
 
-class quizscreen extends StatefulWidget {
+import '../util/constants.dart';
+
+class QuizScreen extends StatefulWidget {
   final String book;
   final int numberOfQuestion;
   final int difficulty;
-  const quizscreen({super.key,required this.book,required this.numberOfQuestion,required this.difficulty});
+  const QuizScreen({super.key,required this.book,required this.numberOfQuestion,required this.difficulty});
 
   @override
-  State<quizscreen> createState() => _quizscreenState();
+  State<QuizScreen> createState() => _QuizScreenState();
 }
 
-class _quizscreenState extends State<quizscreen> {
+class _QuizScreenState extends State<QuizScreen> {
   List<dynamic> questions = [];
   List<int> selectedAnswers = [];
   bool _isLoading = true;
@@ -29,6 +28,7 @@ class _quizscreenState extends State<quizscreen> {
 
     setState(() {
       _isLoading = false;
+      print(questions);
     });
   }
 
@@ -49,31 +49,13 @@ class _quizscreenState extends State<quizscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
-        centerTitle: true,
-        toolbarHeight: 70,
-        title: Center(
-          child: Row(
-            children: [
-              Text("Readigo",
-                style: TextStyle(
-                    color: Colors.lightBlueAccent,
-                    fontWeight: FontWeight.w500,
-                    shadows: [Shadow(color: Colors.greenAccent,offset: Offset(3, 3),blurRadius: 15)]
-                ),
-              ),
-              Image.asset(height: 87,"assets/images/ReadigoLogo.png")
-
-            ],
-          ),
-        ),
-      ),
+      appBar: Constants.defaultAppBar,
       body: Center(
         child: Column(
           children: [
             Text("Quiz",style: TextStyle(fontSize: 35,fontFamily: "Voltaire"),),
-            SizedBox(
-              height: 630,
+            SizedBox(height: 30,),
+            Expanded(
               child: PageView(
                 onPageChanged: (page) {
                   setState(() {
@@ -107,9 +89,10 @@ class _quizscreenState extends State<quizscreen> {
             ),
             PageIndicator(count: questions.length, currentIndex: _currentPage),
             SizedBox(height: 20,),
-            ElevatedButton(
+            (!_isLoading) ? ElevatedButton(
               onPressed: (){
-
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => QuizResultPage(questions: questions, selectedAnswers: selectedAnswers, difficulty: widget.difficulty,)));
               },
               style: OutlinedButton.styleFrom(
                   backgroundColor: Color(0xFFEBFFEE),
@@ -128,7 +111,8 @@ class _quizscreenState extends State<quizscreen> {
                   textAlign: TextAlign.center,
                 )),
               ),
-            ),
+            ) : Container(),
+            SizedBox(height: 50,)
           ],
         ),
       ),

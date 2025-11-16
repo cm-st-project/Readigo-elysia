@@ -21,9 +21,10 @@ class QuizQuestion extends StatelessWidget {
     return Column(
       children: [
         Text(
+          textAlign: TextAlign.center,
           question,
           style: const TextStyle(
-            fontSize: 35,
+            fontSize: 20,
             fontFamily: "Voltaire",
           ),
         ),
