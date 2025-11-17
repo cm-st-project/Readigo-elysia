@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp3/CreateAccount.dart';
+import 'package:testapp3/homepage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -95,19 +96,54 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: OutlinedButton.icon(
-                  onPressed: (){
+                  onPressed: () async {
           // Validate will return true if the form is valid, or false if
           // the form is invalid.
           if (_formKey.currentState!.validate()) {
               String email=emailController.text.trim();
               String password=passwordController.text.trim();
               try {
-              FirebaseAuth.instance.signInWithEmailAndPassword(
+              await FirebaseAuth.instance.signInWithEmailAndPassword(
               email: email,
               password: password,
               );
+
+              // Show success message and navigate to homepage
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Login successful!'),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => homepage(initialpage: 0)),
+                );
+              }
               } on FirebaseAuthException catch (e) {
               print('Error: ${e.code} - ${e.message}');
+
+              // Show error message to user
+              String errorMessage = 'Login failed. Please try again.';
+              if (e.code == 'user-not-found') {
+                errorMessage = 'No user found with this email.';
+              } else if (e.code == 'wrong-password') {
+                errorMessage = 'Incorrect password.';
+              } else if (e.code == 'invalid-email') {
+                errorMessage = 'Invalid email address.';
+              }
+
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(errorMessage),
+                    backgroundColor: Colors.red,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
               }
               }
                   },

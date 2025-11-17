@@ -33,8 +33,28 @@ class _BookReviewPageState extends State<BookReviewPage> {
           "review":reviewtext
         }])
       });
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Book added to your library!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // Navigate back to homepage
+      Navigator.pop(context);
     } catch (e) {
       print("Error: $e");
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to add book. Please try again.'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
   @override
@@ -125,7 +145,8 @@ class _BookReviewPageState extends State<BookReviewPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ElevatedButton(
-                onPressed: () async {
+                onPressed: () {
+                  Navigator.pop(context);
                 },
                 style: OutlinedButton.styleFrom(
                     backgroundColor: Color(0xFFEBFFEE),
