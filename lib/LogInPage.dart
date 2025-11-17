@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:testapp3/CreateAccount.dart';
-import 'package:testapp3/homepage.dart';
+
+import 'get_started.dart';
+// >>>>>>> bedd4df4090b853eb7aec16896d42ea8e7168282
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,163 +14,174 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final emailController=TextEditingController();
-  final passwordController=TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  Future<void> signIn() async {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => start_page()),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message.toString()),
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.blueAccent,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Sign In",style: TextStyle(fontSize: 25, fontFamily: "Voltaire" ),),
+        title: Text(
+          "Sign In",
+          style: TextStyle(fontSize: 25, fontFamily: "Voltaire"),
+        ),
       ),
       body: Form(
         key: _formKey,
         child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
                   width: 360,
-                child: Column(
-                  children: [
-                    Align(child: Text("Email",style: TextStyle(),),alignment:Alignment.centerLeft,),
-                    SizedBox(
-                    height: 60,
-                      child: TextFormField(
-                        controller: emailController,
-
-                        decoration: const InputDecoration(
-                            helperText: "",
-                            focusedBorder:OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                              borderRadius: const BorderRadius.all(Radius.circular(14))
-                            ),
-                            border:OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: const BorderRadius.all(Radius.circular(14))
-                            ),
-                            hintText: ''),
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please Try Again';
-                          }
-                          return null;
-                        },
+                  child: Column(
+                    children: [
+                      Align(
+                        child: Text("Email", style: TextStyle()),
+                        alignment: Alignment.centerLeft,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10,),
-              Container(
-                width: 360,
-                child: Column(
-                  children: [
-                    Align(child: Text("Password",style: TextStyle(),),alignment:Alignment.centerLeft,),
-                    SizedBox(
-                         height: 60,
-                      child: TextFormField(
-                        controller: passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
+                      SizedBox(
+                        height: 60,
+                        child: TextFormField(
+                          controller: emailController,
+
+                          decoration: const InputDecoration(
                             helperText: "",
-                            focusedBorder:OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black),
-                                borderRadius: const BorderRadius.all(Radius.circular(14))
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(14),
+                              ),
                             ),
-                            border:OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: const BorderRadius.all(Radius.circular(14))
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(14),
+                              ),
                             ),
-                            hintText: ''),
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return 'TRY AGAIN!!!';
-                          }
-                          return null;
-                        },
+                            hintText: '',
+                          ),
+                          validator: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please Try Again';
+                            }
+                            return null;
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: OutlinedButton.icon(
-                  onPressed: () async {
-          // Validate will return true if the form is valid, or false if
-          // the form is invalid.
-          if (_formKey.currentState!.validate()) {
-              String email=emailController.text.trim();
-              String password=passwordController.text.trim();
-              try {
-              await FirebaseAuth.instance.signInWithEmailAndPassword(
-              email: email,
-              password: password,
-              );
-
-              // Show success message and navigate to homepage
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Login successful!'),
-                    backgroundColor: Colors.green,
-                    duration: Duration(seconds: 1),
+                SizedBox(height: 10),
+                Container(
+                  width: 360,
+                  child: Column(
+                    children: [
+                      Align(
+                        child: Text("Password", style: TextStyle()),
+                        alignment: Alignment.centerLeft,
+                      ),
+                      SizedBox(
+                        height: 60,
+                        child: TextFormField(
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            helperText: "",
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(14),
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(14),
+                              ),
+                            ),
+                            hintText: '',
+                          ),
+                          validator: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'TRY AGAIN!!!';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                );
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => homepage(initialpage: 0)),
-                );
-              }
-              } on FirebaseAuthException catch (e) {
-              print('Error: ${e.code} - ${e.message}');
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: OutlinedButton.icon(
+                    onPressed: () {
 
-              // Show error message to user
-              String errorMessage = 'Login failed. Please try again.';
-              if (e.code == 'user-not-found') {
-                errorMessage = 'No user found with this email.';
-              } else if (e.code == 'wrong-password') {
-                errorMessage = 'Incorrect password.';
-              } else if (e.code == 'invalid-email') {
-                errorMessage = 'Invalid email address.';
-              }
-
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(errorMessage),
-                    backgroundColor: Colors.red,
-                    duration: Duration(seconds: 3),
-                  ),
-                );
-              }
-              }
-              }
-                  },
-                  label: Text("Submit"),
-                  style: OutlinedButton.styleFrom(
+                      if (_formKey.currentState!.validate()) {
+                        signIn();
+                      }
+                    },
+                    label: Text("Submit"),
+                    style: OutlinedButton.styleFrom(
                       backgroundColor: Color(0xFFC0FFC0),
-                      foregroundColor: Color(0xFF41BF41)
+                      foregroundColor: Color(0xFF41BF41),
+                    ),
                   ),
-
-                )),
-              SizedBox(height: 1,),
-              Text("Don't have an account?"),
-              TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Createaccount()));
+                ),
+                SizedBox(height: 1),
+                Text("Don't have an account?"),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Createaccount()),
+                    );
                   },
                   style: ButtonStyle(
-                    minimumSize: WidgetStateProperty.all(Size.zero), // Removes default minimum size
-                    padding: WidgetStateProperty.all(EdgeInsets.zero), // Removes default padding
+                    minimumSize: WidgetStateProperty.all(Size.zero),
+                    // Removes default minimum size
+                    padding: WidgetStateProperty.all(EdgeInsets.zero),
+                    // Removes default padding
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: Text("Tap Here!",style: TextStyle(color: Colors.cyan),)
-              ),
-              Image.asset(height: 300,"assets/images/ReadigoLogo.png")
-
-            ],
+                  child: Text(
+                    "Tap Here!",
+                    style: TextStyle(color: Colors.cyan),
+                  ),
+                ),
+                Image.asset(height: 300, "assets/images/ReadigoLogo.png"),
+              ],
+            ),
           ),
         ),
       ),

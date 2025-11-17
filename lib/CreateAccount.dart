@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:testapp3/LogInPage.dart';
+import 'package:testapp3/util/firebase_utils.dart';
 import 'package:testapp3/util/google_services.dart';
 
 import 'get_started.dart';
@@ -28,41 +30,56 @@ class _CreateAccountState extends State<Createaccount> {
         email: email,
         password: password,
       );
-      await GoogleServices.adduser(username, email);
-
-      // Show success message and navigate
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Account created successfully!'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => start_page()),
-        );
+// <<<<<<< HEAD
+//       await GoogleServices.adduser(username, email);
+//
+//       // Show success message and navigate
+//       if (mounted) {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           SnackBar(
+//             content: Text('Account created successfully!'),
+//             backgroundColor: Colors.green,
+//             duration: Duration(seconds: 2),
+//           ),
+//         );
+//         Navigator.pushReplacement(
+//           context,
+//           MaterialPageRoute(builder: (context) => start_page()),
+//         );
+//       }
+//     } on FirebaseAuthException catch (e) {
+//       print('Error: ${e.code} - ${e.message}');
+//
+//       // Show error message to user
+//       String errorMessage = 'Account creation failed. Please try again.';
+//       if (e.code == 'weak-password') {
+//         errorMessage = 'Password is too weak. Use at least 6 characters.';
+//       } else if (e.code == 'email-already-in-use') {
+//         errorMessage = 'An account already exists with this email.';
+//       } else if (e.code == 'invalid-email') {
+//         errorMessage = 'Invalid email address.';
+//       }
+//
+//       if (mounted) {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           SnackBar(
+//             content: Text(errorMessage),
+//             backgroundColor: Colors.red,
+//             duration: Duration(seconds: 3),
+// =======
+      if(await FirebaseUtils.adduser(username, email)){
+        if(mounted){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginPage()));
+        }
       }
     } on FirebaseAuthException catch (e) {
-      print('Error: ${e.code} - ${e.message}');
-
-      // Show error message to user
-      String errorMessage = 'Account creation failed. Please try again.';
-      if (e.code == 'weak-password') {
-        errorMessage = 'Password is too weak. Use at least 6 characters.';
-      } else if (e.code == 'email-already-in-use') {
-        errorMessage = 'An account already exists with this email.';
-      } else if (e.code == 'invalid-email') {
-        errorMessage = 'Invalid email address.';
-      }
-
-      if (mounted) {
+      if(mounted){
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 3),
+            content: Text(e.message.toString()),
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.blueAccent,
+// >>>>>>> bedd4df4090b853eb7aec16896d42ea8e7168282
           ),
         );
       }
