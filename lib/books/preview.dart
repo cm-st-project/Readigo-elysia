@@ -44,10 +44,16 @@ class _BookPreviewState extends State<BookPreview> {
   User? currentUser = FirebaseAuth.instance.currentUser;
 
   void getGradeLevel() async {
-    final futureGradeLevel = await OpenaiPrompt.getBookGradeLevel(widget.title);
-    setState(() {
-      gradeLevel = futureGradeLevel;
-    });
+    try {
+      final futureGradeLevel = await OpenaiPrompt.getBookGradeLevel(widget.title);
+      setState(() {
+        gradeLevel = futureGradeLevel;
+      });
+    } catch (e) {
+      setState(() {
+        gradeLevel = -2; // Error state
+      });
+    }
   }
 
   @override
@@ -98,7 +104,7 @@ class _BookPreviewState extends State<BookPreview> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Readigo",
+              "Bookfania",
               style: TextStyle(
                 fontSize: 36,
                 color: Colors.lightBlueAccent,
@@ -112,7 +118,7 @@ class _BookPreviewState extends State<BookPreview> {
                 ],
               ),
             ),
-            Image.asset(height: 87, "assets/images/ReadigoLogo.png"),
+            Image.asset(height: 87, "assets/images/BookfaniaLogo.png"),
           ],
         ),
       ),
@@ -133,7 +139,26 @@ class _BookPreviewState extends State<BookPreview> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(flex: 50, child: Image.network(widget.bookImageurl)),
+                  Expanded(
+                    flex: 50,
+                    child: widget.bookImageurl.isNotEmpty
+                        ? Image.network(widget.bookImageurl)
+                        : Container(
+                            height: 180,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.menu_book, size: 60, color: Colors.grey[600]),
+                                SizedBox(height: 8),
+                                Text("No Cover", style: TextStyle(color: Colors.grey[600])),
+                              ],
+                            ),
+                          ),
+                  ),
                   Expanded(
                     flex: 50,
                     child: Center(
@@ -149,13 +174,22 @@ class _BookPreviewState extends State<BookPreview> {
                           //Text((int.parse(widget.pages)*300).toString()+" words",style: TextStyle(fontSize: 30,fontFamily: "Voltaire"),),
                           (gradeLevel == -1)
                               ? CircularProgressIndicator()
-                              : Text(
-                                "Grade Level: $gradeLevel",
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  fontFamily: "Voltaire",
-                                ),
-                              ),
+                              : (gradeLevel == -2)
+                                  ? Text(
+                                    "Grade Level: N/A",
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      fontFamily: "Voltaire",
+                                      color: Colors.grey,
+                                    ),
+                                  )
+                                  : Text(
+                                    "Grade Level: $gradeLevel",
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      fontFamily: "Voltaire",
+                                    ),
+                                  ),
                         ],
                       ),
                     ),

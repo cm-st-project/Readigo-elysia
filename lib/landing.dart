@@ -27,7 +27,7 @@ class _LandingPageState extends State<LandingPage> {
                 border: Border.all(color: Colors.white),
               ),
               child: Text(
-                "Welcome to \nReadigo! 📚",
+                "Welcome to \nBookfania! 📚",
                 style: TextStyle(
                   color: Colors.cyan,
                   fontSize: 48,
@@ -56,37 +56,37 @@ class _LandingPageState extends State<LandingPage> {
                 foregroundColor: Color(0xFF41BF41),
               ),
             ),
-            OutlinedButton.icon(
-              onPressed: () async {
-                bool success = await GoogleServices.signInWithGoogle();
-                if (success) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('Logged in!')));
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => start_page()),
-                  );
-                }
-              },
-              icon: Container(
-                width: 20,
-                height: 30,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      "https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png",
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              label: Text("Sign in with Google"),
-              style: OutlinedButton.styleFrom(
-                backgroundColor: Color(0xFFC0FFC0),
-                foregroundColor: Color(0xFF41BF41),
-              ),
-            ),
+            // OutlinedButton.icon(
+            //   onPressed: () async {
+            //     bool success = await GoogleServices.signInWithGoogle();
+            //     if (success) {
+            //       ScaffoldMessenger.of(
+            //         context,
+            //       ).showSnackBar(SnackBar(content: Text('Logged in!')));
+            //       Navigator.pushReplacement(
+            //         context,
+            //         MaterialPageRoute(builder: (context) => start_page()),
+            //       );
+            //     }
+            //   },
+            //   icon: Container(
+            //     width: 20,
+            //     height: 30,
+            //     decoration: BoxDecoration(
+            //       image: DecorationImage(
+            //         image: NetworkImage(
+            //           "https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png",
+            //         ),
+            //         fit: BoxFit.cover,
+            //       ),
+            //     ),
+            //   ),
+            //   label: Text("Sign in with Google"),
+            //   style: OutlinedButton.styleFrom(
+            //     backgroundColor: Color(0xFFC0FFC0),
+            //     foregroundColor: Color(0xFF41BF41),
+            //   ),
+            // ),
             OutlinedButton.icon(
               onPressed: () async {
                 Navigator.pushReplacement(
@@ -131,7 +131,7 @@ class _LandingPageState extends State<LandingPage> {
               ),
               child: Text("Tap Here!", style: TextStyle(color: Colors.cyan)),
             ),
-            Image.asset(height: 300, "assets/images/ReadigoLogo.png"),
+            Image.asset(height: 300, "assets/images/BookfaniaLogo.png"),
           ],
         ),
       ),

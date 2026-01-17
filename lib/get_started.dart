@@ -22,7 +22,7 @@ class _start_pageState extends State<start_page> {
                   padding:EdgeInsets.all(65),
                   decoration:BoxDecoration(border: Border.all(color: Colors.white),),
                   child: Text(
-                    "Welcome to \nReadigo! 📚",
+                    "Welcome to \nBookfania! 📚",
                     style: TextStyle(
                         color: Colors.cyan,
                         fontSize:48,
@@ -48,7 +48,7 @@ class _start_pageState extends State<start_page> {
                     foregroundColor: Color(0xFF41BF41)
                 ),
               ),
-              Image.asset(height: 300,"assets/images/ReadigoLogo.png")
+              Image.asset(height: 300,"assets/images/BookfaniaLogo.png")
             ],
           ),
         ),

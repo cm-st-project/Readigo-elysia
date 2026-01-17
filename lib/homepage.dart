@@ -108,7 +108,7 @@ class _homepageState extends State<homepage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Readigo",
+              "Bookfania",
               style: TextStyle(
                 fontSize: 36,
                 color: Colors.lightBlueAccent,
@@ -123,7 +123,7 @@ class _homepageState extends State<homepage> {
               ),
             ),
             SizedBox(width: 8),
-            Image.asset("assets/images/ReadigoLogo.png", height: 87),
+            Image.asset("assets/images/BookfaniaLogo.png", height: 87),
           ],
         ),
 

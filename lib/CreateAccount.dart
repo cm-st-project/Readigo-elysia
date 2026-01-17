@@ -303,7 +303,7 @@ class _CreateAccountState extends State<Createaccount> {
                   child: Text("Tap Here!", style: TextStyle(color: Colors.cyan)),
                 ),
                 SizedBox(height: 20),
-                Image.asset(height: 300, "assets/images/ReadigoLogo.png"),
+                Image.asset(height: 300, "assets/images/BookfaniaLogo.png"),
               ],
             ),
           ),

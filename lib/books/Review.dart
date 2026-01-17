@@ -52,7 +52,7 @@ class _BookReviewPageState extends State<BookReviewPage> {
         ]),
       });
 
-      // Show success message
+      // Show success message and navigate to profile
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -62,8 +62,13 @@ class _BookReviewPageState extends State<BookReviewPage> {
           ),
         );
 
-        // Navigate back to homepage
-        Navigator.pop(context);
+        // Navigate to profile page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => homepage(initialpage: 3),
+          ),
+        );
       }
     } catch (e) {
       print("Error: $e");
@@ -90,7 +95,7 @@ class _BookReviewPageState extends State<BookReviewPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Readigo",
+              "Bookfania",
               style: TextStyle(
                 fontSize: 36,
                 color: Colors.lightBlueAccent,
@@ -104,7 +109,7 @@ class _BookReviewPageState extends State<BookReviewPage> {
                 ],
               ),
             ),
-            Image.asset(height: 87, "assets/images/ReadigoLogo.png"),
+            Image.asset(height: 87, "assets/images/BookfaniaLogo.png"),
           ],
         ),
       ),
@@ -236,15 +241,8 @@ class _BookReviewPageState extends State<BookReviewPage> {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    addbooktolibrary();
-                    Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => homepage(initialpage: 3),
-                      ),
-                    );
+                  onPressed: () async {
+                    await addbooktolibrary();
                   },
                   style: OutlinedButton.styleFrom(
                     backgroundColor: Color(0xFFEBFFEE),

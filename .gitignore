@@ -12,6 +12,10 @@
 .swiftpm/
 migrate_working_dir/
 
+# Environment variables (secrets)
+.env
+assets/.env
+
 # IntelliJ related
 *.iml
 *.ipr
@@ -35,8 +39,6 @@ migrate_working_dir/
 /build/
 pubspec.lock
 
-.env
-assets/.env
 
 # Symbolication related
 app.*.symbols

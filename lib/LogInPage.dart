@@ -179,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(color: Colors.cyan),
                   ),
                 ),
-                Image.asset(height: 300, "assets/images/ReadigoLogo.png"),
+                Image.asset(height: 300, "assets/images/BookfaniaLogo.png"),
               ],
             ),
           ),

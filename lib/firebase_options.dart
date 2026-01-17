@@ -53,7 +53,7 @@ class DefaultFirebaseOptions {
     apiKey: 'AIzaSyBogp3LB4hEjLPzpBVp2SgxkDqL__AGAl0',
     appId: '1:550818826311:android:a9f617c460e7b6e3094962',
     messagingSenderId: '550818826311',
-    projectId: 'readigo',
+    projectId: 'Bookfania',
     storageBucket: 'readigo.firebasestorage.app',
   );
 
